@@ -101,8 +101,8 @@ public class TopProjectsDetector {
             String fileName = filePath + "//top100Projects.csv";
             BufferedWriter csvWriter = new BufferedWriter(new FileWriter(new File(fileName)));
             csvWriter.write(buildCSVTitle());
-            for (Project project : top100Projects)
-                csvWriter.write(buildCSVRow(project));
+            for (int i = top100Projects.length - 1; i >= 0; i--)
+                csvWriter.write(buildCSVRow(top100Projects[i]));
             csvWriter.close();
         } catch (IOException e) {
             LOG.error("", e);
