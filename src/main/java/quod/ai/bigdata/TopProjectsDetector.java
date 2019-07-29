@@ -5,13 +5,13 @@ import com.google.gson.JsonParser;
 import quod.ai.bigdata.project.Project;
 import quod.ai.bigdata.project.ProjectStatistic;
 import quod.ai.bigdata.scorer.Measurable;
+import quod.ai.bigdata.scorer.metrics.CommitMetric;
 
 import java.io.BufferedReader;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 public class TopProjectsDetector {
     private static final int NUMBER_OF_COLLECTED_HOURS = 30 * 24;
@@ -24,6 +24,7 @@ public class TopProjectsDetector {
     public void detectTop100Projects() {
         if (collectProjectStatistic()) {
             projectStatistic.updateProjectHealth();
+            Project[] top100Projects = searchTop100Projects();
         }
     }
 
@@ -43,12 +44,13 @@ public class TopProjectsDetector {
     }
 
     private void collectProjectStatistic(LocalDateTime atHour) throws Exception {
+        System.out.println("Collecting events at: " + atHour.toString());
         JsonParser eventParser = new JsonParser();
         BufferedReader eventsReader = EventDownloader.openStreamToEvents(atHour);
         String line;
         while ((line = eventsReader.readLine()) != null) {
             JsonObject event = eventParser.parse(line).getAsJsonObject();
-            projectStatistic.addEvent(event);
+            projectStatistic.addEvent(event, atHour);
         }
     }
 

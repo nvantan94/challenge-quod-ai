@@ -3,6 +3,7 @@ package quod.ai.bigdata.project;
 import com.google.gson.JsonObject;
 import quod.ai.bigdata.scorer.Measurable;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,7 @@ public class ProjectStatistic {
         projectToMetrics = new HashMap<>();
     }
 
-    public void addEvent(JsonObject event) {
+    public void addEvent(JsonObject event, LocalDateTime atHour) {
         Project project = extractProject(event);
         List<Measurable> projMetrics;
         if (projectToMetrics.containsKey(project))
@@ -27,7 +28,7 @@ public class ProjectStatistic {
             metrics.forEach( metric -> projMetrics.add(metric.clone()));
             projectToMetrics.put(project, projMetrics);
         }
-        projMetrics.forEach(projMetric -> projMetric.consumeEvent(event));
+        projMetrics.forEach(projMetric -> projMetric.consumeEvent(event, atHour));
     }
 
     private Project extractProject(JsonObject event) {
