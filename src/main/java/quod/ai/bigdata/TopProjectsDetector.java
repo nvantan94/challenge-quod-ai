@@ -108,7 +108,7 @@ public class TopProjectsDetector {
 
     private String buildCSVTitle() {
         StringBuilder titleSb = new StringBuilder();
-        titleSb.append("org,repo_name");
+        titleSb.append("repo_name");
         for (Measurable metric : metrics)
             titleSb.append("," + metric.csvTitle());
         return titleSb.append("\n").toString();

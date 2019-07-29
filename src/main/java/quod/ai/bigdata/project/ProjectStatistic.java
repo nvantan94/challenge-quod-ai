@@ -38,8 +38,7 @@ public class ProjectStatistic {
         long id = repo.get("id").getAsLong();
         if (!idToProject.containsKey(id)) {
             String name = repo.get("name").getAsString();
-            String org = event.getAsJsonObject("org").get("login").getAsString();
-            Project project = new Project(id, org, name);
+            Project project = new Project(id, name);
             idToProject.put(id, project);
         }
         return idToProject.get(id);
