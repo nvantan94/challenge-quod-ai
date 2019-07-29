@@ -12,10 +12,12 @@ import java.util.Map;
 public class ProjectStatistic {
     private List<Measurable> metrics;
     private Map<Project, List<Measurable>> projectToMetrics;
+    private Map<Long, Project> idToProject;
 
     public ProjectStatistic(List<Measurable> metrics) {
         this.metrics = metrics;
         projectToMetrics = new HashMap<>();
+        idToProject = new HashMap<>();
     }
 
     public void addEvent(JsonObject event, LocalDateTime atHour) {
@@ -34,9 +36,13 @@ public class ProjectStatistic {
     private Project extractProject(JsonObject event) {
         JsonObject repo = event.getAsJsonObject("repo");
         long id = repo.get("id").getAsLong();
-        String url = repo.get("url").getAsString();
-        String name = repo.get("name").getAsString();
-        return new Project(id, url, name);
+        if (!idToProject.containsKey(id)) {
+            String url = repo.get("url").getAsString();
+            String name = repo.get("name").getAsString();
+            Project project = new Project(id, url, name);
+            idToProject.put(id, project);
+        }
+        return idToProject.get(id);
     }
 
     public void updateProjectHealth() {
