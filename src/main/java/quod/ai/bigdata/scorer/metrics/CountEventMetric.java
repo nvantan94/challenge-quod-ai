@@ -22,10 +22,10 @@ public abstract class CountEventMetric implements Measurable {
     public void consumeEvent(JsonObject event, LocalDateTime atHour) {
         if (checkEvent(event)) {
             int dayOfYear = atHour.getDayOfYear();
-            int noCommits = 0;
+            int noEvents = 0;
             if (dateToNoEvents.containsKey(dayOfYear))
-                noCommits = dateToNoEvents.get(dayOfYear);
-            dateToNoEvents.put(dayOfYear, noCommits++);
+                noEvents = dateToNoEvents.get(dayOfYear);
+            dateToNoEvents.put(dayOfYear, noEvents + 1);
         }
     }
 
@@ -33,10 +33,10 @@ public abstract class CountEventMetric implements Measurable {
 
     @Override
     public double calculateScore() {
-        for (Integer noCommits : dateToNoEvents.values()) {
-            if (noCommits > maxNoEvents)
-                maxNoEvents = noCommits;
-            sumNoEvents += noCommits;
+        for (Integer noEvents : dateToNoEvents.values()) {
+            if (noEvents > maxNoEvents)
+                maxNoEvents = noEvents;
+            sumNoEvents += noEvents;
         }
         return maxNoEvents == 0? 0 : (sumNoEvents /30.0) / maxNoEvents;
     }
