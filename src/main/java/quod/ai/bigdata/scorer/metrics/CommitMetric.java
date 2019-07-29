@@ -20,7 +20,7 @@ public class CommitMetric implements Measurable {
 
     @Override
     public void consumeEvent(JsonObject event, LocalDateTime atHour) {
-        if (event.has("comment")) {
+        if (event.getAsJsonObject("payload").has("comment")) {
             int dayOfYear = atHour.getDayOfYear();
             int noCommits = 0;
             if (dateToNoCommits.containsKey(dayOfYear))
