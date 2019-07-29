@@ -7,7 +7,9 @@ import org.slf4j.LoggerFactory;
 import quod.ai.bigdata.project.Project;
 import quod.ai.bigdata.project.ProjectStatistic;
 import quod.ai.bigdata.scorer.Measurable;
+import quod.ai.bigdata.scorer.metrics.ResponseTimeForIssueMetric;
 import quod.ai.bigdata.scorer.metrics.count.CommitMetric;
+import quod.ai.bigdata.scorer.metrics.count.ReleaseMetric;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -130,7 +132,9 @@ public class TopProjectsDetector {
             return;
         }
         List<Measurable> metrics = new ArrayList<>();
+        metrics.add(new ResponseTimeForIssueMetric());
         metrics.add(new CommitMetric());
+        metrics.add(new ReleaseMetric());
         TopProjectsDetector topProjectsDetector = new TopProjectsDetector(metrics);
         topProjectsDetector.detectTop100Projects(args[0]);
     }
