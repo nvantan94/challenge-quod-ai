@@ -7,7 +7,7 @@ import quod.ai.bigdata.scorer.metrics.CountEventMetric;
 public class CommitMetric extends CountEventMetric {
     @Override
     public boolean checkEvent(JsonObject event) {
-        return event.getAsJsonObject("payload").has("comment");
+        return event.get("type").getAsString().equals("PushEvent");
     }
 
     @Override
