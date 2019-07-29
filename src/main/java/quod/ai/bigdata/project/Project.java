@@ -43,6 +43,6 @@ public class Project implements Comparable<Project> {
     }
 
     public String csvContent() {
-        return name;
+        return name + "," + String.format("%.2f", healthScore);
     }
 }
