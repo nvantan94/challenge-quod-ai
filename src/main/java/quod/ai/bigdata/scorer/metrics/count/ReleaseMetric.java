@@ -16,4 +16,9 @@ public class ReleaseMetric extends CountEventMetric {
     public Measurable clone() {
         return new ReleaseMetric();
     }
+
+    @Override
+    public String csvTitle() {
+        return "avg_num_releases,max_num_releases";
+    }
 }

@@ -45,4 +45,9 @@ public abstract class CountEventMetric implements Measurable {
     public Measurable clone() {
         return null;
     }
+
+    @Override
+    public String csvContent() {
+        return String.format("%.2f",sumNoEvents/30.0) + "," + maxNoEvents;
+    }
 }

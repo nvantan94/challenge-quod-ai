@@ -20,17 +20,20 @@ public class TopProjectsDetector {
     private static final Logger LOG = LoggerFactory.getLogger(TopProjectsDetector.class);
 
     private static final int NUMBER_OF_COLLECTED_HOURS = 30 * 24;
+
+    private List<Measurable> metrics;
     private ProjectStatistic projectStatistic;
 
     public TopProjectsDetector(List<Measurable> metrics) {
+        this.metrics = metrics;
         projectStatistic = new ProjectStatistic(metrics);
     }
 
-    public void detectTop100Projects() {
+    public void detectTop100Projects(String csvFilePath) {
         if (collectProjectStatistic()) {
             projectStatistic.updateProjectHealth();
             Project[] top100Projects = searchTop100Projects();
-            System.out.println(top100Projects.length);
+            writeToCSV(top100Projects, csvFilePath);
         }
     }
 
@@ -91,13 +94,43 @@ public class TopProjectsDetector {
                 atHour.getYear(), atHour.getMonthValue(), atHour.getDayOfMonth(), atHour.getHour());
     }
 
+    private void writeToCSV(Project[] top100Projects, String filePath) {
+        try {
+            BufferedWriter csvWriter = new BufferedWriter(new FileWriter(new File(filePath)));
+            csvWriter.write(buildCSVTitle());
+            for (Project project : top100Projects)
+                csvWriter.write(buildCSVRow(project));
+            csvWriter.close();
+        } catch (IOException e) {
+            LOG.error("", e);
+        }
+    }
+
+    private String buildCSVTitle() {
+        StringBuilder titleSb = new StringBuilder();
+        titleSb.append("org,repo_name");
+        for (Measurable metric : metrics)
+            titleSb.append("," + metric.csvTitle());
+        return titleSb.append("\n").toString();
+    }
+
+    private String buildCSVRow(Project project) {
+        StringBuilder rowSb = new StringBuilder();
+        rowSb.append(project.csvContent());
+        List<Measurable> projMetrics = projectStatistic.getProjectToMetrics().get(project);
+        for (Measurable projMetric : projMetrics)
+            rowSb.append("," + projMetric.csvContent());
+        return rowSb.append("\n").toString();
+    }
+
     public static void main(String[] args) {
-        long start = System.currentTimeMillis();
+        if (args.length == 0) {
+            LOG.error("You need pass a param for csv file path");
+            return;
+        }
         List<Measurable> metrics = new ArrayList<>();
         metrics.add(new CommitMetric());
         TopProjectsDetector topProjectsDetector = new TopProjectsDetector(metrics);
-        topProjectsDetector.detectTop100Projects();
-        long end = System.currentTimeMillis();
-        System.out.println((end - start) / 1000.0);
+        topProjectsDetector.detectTop100Projects(args[0]);
     }
 }

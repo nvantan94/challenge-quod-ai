@@ -8,4 +8,6 @@ public interface Measurable {
     void consumeEvent(JsonObject event, LocalDateTime atHour);
     double calculateScore();
     Measurable clone();
+    String csvTitle();
+    String csvContent();
 }

@@ -44,4 +44,8 @@ public class Project implements Comparable<Project> {
             return 1;
         return -1;
     }
+
+    public String csvContent() {
+        return org + "," + name;
+    }
 }

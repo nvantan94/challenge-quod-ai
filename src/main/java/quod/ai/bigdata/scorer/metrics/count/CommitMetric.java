@@ -14,4 +14,9 @@ public class CommitMetric extends CountEventMetric {
     public Measurable clone() {
         return new CommitMetric();
     }
+
+    @Override
+    public String csvTitle() {
+        return "avg_num_commits,max_num_commits";
+    }
 }
