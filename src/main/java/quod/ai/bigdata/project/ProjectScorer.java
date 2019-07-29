@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ProjectStatistic {
+public class ProjectScorer {
     private List<Measurable> metrics;
     private Map<Project, List<Measurable>> projectToMetrics;
 
-    public ProjectStatistic(List<Measurable> metrics) {
+    public ProjectScorer(List<Measurable> metrics) {
         this.metrics = metrics;
         projectToMetrics = new HashMap<>();
     }
