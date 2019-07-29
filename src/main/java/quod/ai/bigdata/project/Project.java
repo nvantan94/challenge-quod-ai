@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Project {
+public class Project implements Comparable<Project> {
     private long id;
     private String name;
     private String url;
@@ -33,5 +33,15 @@ public class Project {
         return project.id == id &&
                 project.name.equals(name) &&
                 project.url.equals(url);
+    }
+
+    @Override
+    public int compareTo(Project other) {
+        double diff = this.healthScore - other.healthScore;
+        if (diff == 0)
+            return 0;
+        if (diff > 0)
+            return 1;
+        return -1;
     }
 }

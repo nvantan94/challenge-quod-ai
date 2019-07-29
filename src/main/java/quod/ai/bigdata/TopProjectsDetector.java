@@ -2,12 +2,16 @@ package quod.ai.bigdata;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import quod.ai.bigdata.project.Project;
 import quod.ai.bigdata.project.ProjectStatistic;
 import quod.ai.bigdata.scorer.Measurable;
 
 import java.io.BufferedReader;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 public class TopProjectsDetector {
     private static final int NUMBER_OF_COLLECTED_HOURS = 30 * 24;
@@ -46,5 +50,22 @@ public class TopProjectsDetector {
             JsonObject event = eventParser.parse(line).getAsJsonObject();
             projectStatistic.addEvent(event);
         }
+    }
+
+    private Project[] searchTop100Projects() {
+        Project[] projects = (Project[])projectStatistic.getProjectToMetrics().keySet().toArray();
+        int len = projects.length, toIndex = len < 100? len : 100;
+        Arrays.sort(projects, 0, toIndex);
+        for (int i = 100; i < len; i++) {
+            if (projects[i].getHealthScore() > projects[0].getHealthScore()) {
+                int insertionPoint = Arrays.binarySearch(projects, 0, toIndex, projects[i]);
+                if (insertionPoint < 0)
+                    insertionPoint = -(insertionPoint + 2);
+                for (int j = 0; j < insertionPoint; j++)
+                    projects[j] = projects[j+1];
+                projects[insertionPoint] = projects[i];
+            }
+        }
+        return Arrays.copyOfRange(projects, 0, toIndex);
     }
 }
