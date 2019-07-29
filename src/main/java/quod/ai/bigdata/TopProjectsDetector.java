@@ -5,13 +5,14 @@ import com.google.gson.JsonParser;
 import quod.ai.bigdata.project.Project;
 import quod.ai.bigdata.project.ProjectStatistic;
 import quod.ai.bigdata.scorer.Measurable;
-import quod.ai.bigdata.scorer.metrics.CommitMetric;
+import quod.ai.bigdata.scorer.metrics.count.CommitMetric;
 
 import java.io.BufferedReader;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class TopProjectsDetector {
     private static final int NUMBER_OF_COLLECTED_HOURS = 30 * 24;
@@ -33,6 +34,7 @@ public class TopProjectsDetector {
         for (int i = 0; i < NUMBER_OF_COLLECTED_HOURS; i++) {
             try {
                 collectProjectStatistic(atHour);
+                Thread.sleep((int)(Math.random() * 1000));
             } catch (Exception e) {
                 System.out.println("Error during execute events at " + atHour.toString());
                 e.printStackTrace();
@@ -55,7 +57,7 @@ public class TopProjectsDetector {
     }
 
     private Project[] searchTop100Projects() {
-        Project[] projects = (Project[])projectStatistic.getProjectToMetrics().keySet().toArray();
+        Project[] projects = getListOfProjects();
         int len = projects.length, toIndex = len < 100? len : 100;
         Arrays.sort(projects, 0, toIndex);
         for (int i = 100; i < len; i++) {
@@ -69,5 +71,22 @@ public class TopProjectsDetector {
             }
         }
         return Arrays.copyOfRange(projects, 0, toIndex);
+    }
+
+    private Project[] getListOfProjects() {
+        Set<Project> projectSet = projectStatistic.getProjectToMetrics().keySet();
+        Project[] projects = new Project[projectSet.size()];
+        projectSet.toArray(projects);
+        return projects;
+    }
+
+    public static void main(String[] args) {
+        long start = System.currentTimeMillis();
+        List<Measurable> metrics = new ArrayList<>();
+        metrics.add(new CommitMetric());
+        TopProjectsDetector topProjectsDetector = new TopProjectsDetector(metrics);
+        topProjectsDetector.detectTop100Projects();
+        long end = System.currentTimeMillis();
+        System.out.println((end - start) / 1000.0);
     }
 }
