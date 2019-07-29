@@ -1,5 +1,5 @@
-# A data pipeline for detecting healthiest git projects
-This project implements a simple data pipeline that detect top 100 healthiest git projects for the last 30 days using data from https://www.gharchive.org/
+# A data pipeline for detecting the healthiest git projects
+This project implements a simple data pipeline that detect the top 100 healthiest git projects for the last 30 days using data from https://www.gharchive.org/
 
 
 # Technical Decisions
@@ -9,6 +9,7 @@ This project implements a simple data pipeline that detect top 100 healthiest gi
 + Java 8
 + logback for logging
 + Gson for json parser
++ Lombok
 
 2) Future works
 
@@ -25,12 +26,13 @@ This project implements a simple data pipeline that detect top 100 healthiest gi
 
 2) Compile Project
 
-To run the application, using the following command in project root:
+First, you need to compile the project, using the following command in project root:
 ```
 mvn compile
 ```
 
 3) Run Project
+
 After compiling, using the following command in project root to run the application:
 ```
 mvn exec:java -Dexec.mainClass=quod.ai.bigdata.TopProjectsDetector -Dexec.args="<directory for saving csv file>"
