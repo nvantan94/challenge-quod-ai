@@ -40,4 +40,9 @@ public abstract class CountEventMetric implements Measurable {
         }
         return maxNoEvents == 0? 0 : (sumNoEvents /30.0) / maxNoEvents;
     }
+
+    @Override
+    public Measurable clone() {
+        return null;
+    }
 }
