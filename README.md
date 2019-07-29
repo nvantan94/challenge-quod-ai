@@ -1,5 +1,5 @@
 # A data pipeline for detecting the healthiest git projects
-This project implements a simple data pipeline that detect the top 100 healthiest git projects for the last 30 days using data from https://www.gharchive.org/
+This project implements a simple data pipeline that detects the top 100 healthiest git projects for the last 30 days using data from https://www.gharchive.org/
 
 
 # Technical Decisions
@@ -15,6 +15,16 @@ This project implements a simple data pipeline that detect the top 100 healthies
 
 + Test developed metrics to check its efficiency level
 + Add more metrics to calculate final health score
+
+# Getting Started
+
+The application collects data from https://www.gharchive.org/ for the last 30 days and calculate different metrics based on events. Then, these metrics are integrated to measure the health of a project. Finally, the top 100 healthiest projects will be saved to a csv file.
+
+I implemented three metrics to calculate the health of a project includes:
++ Average number of commits (push) per day
++ Number of release
++ Average response time of first response to an issue
+
 
 # Follow those below instructions to run project
 
