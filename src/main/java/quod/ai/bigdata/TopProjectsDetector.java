@@ -38,7 +38,7 @@ public class TopProjectsDetector {
                 e.printStackTrace();
                 return false;
             }
-            atHour.plusHours(1);
+            atHour = atHour.plusHours(1);
         }
         return true;
     }
