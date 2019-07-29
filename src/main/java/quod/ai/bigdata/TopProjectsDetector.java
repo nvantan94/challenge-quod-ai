@@ -47,7 +47,7 @@ public class TopProjectsDetector {
                 Thread.sleep((int)(Math.random() * 1000));
             } catch (Exception e) {
                 LOG.error("Error during execute events at " + getHourPresentation(atHour));
-                e.printStackTrace();
+                LOG.error("", e);
                 return false;
             }
             atHour = atHour.plusHours(1);
@@ -90,13 +90,14 @@ public class TopProjectsDetector {
     }
 
     private String getHourPresentation(LocalDateTime atHour) {
-        return String.format("%4d-%02d-%02d-%02d",
-                atHour.getYear(), atHour.getMonthValue(), atHour.getDayOfMonth(), atHour.getHour());
+        return String.format("%4d-%02d-%02d-%02d:00",
+                atHour.getYear(), atHour.getMonthValue(), atHour.getDayOfMonth(), atHour.getHour(), atHour.getMinute());
     }
 
     private void writeToCSV(Project[] top100Projects, String filePath) {
         try {
-            BufferedWriter csvWriter = new BufferedWriter(new FileWriter(new File(filePath)));
+            String fileName = filePath + "//top100Projects.csv";
+            BufferedWriter csvWriter = new BufferedWriter(new FileWriter(new File(fileName)));
             csvWriter.write(buildCSVTitle());
             for (Project project : top100Projects)
                 csvWriter.write(buildCSVRow(project));
@@ -125,7 +126,7 @@ public class TopProjectsDetector {
 
     public static void main(String[] args) {
         if (args.length == 0) {
-            LOG.error("You need pass a param for csv file path");
+            LOG.error("Specific directory for csv file");
             return;
         }
         List<Measurable> metrics = new ArrayList<>();
