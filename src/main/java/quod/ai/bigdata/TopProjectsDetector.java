@@ -2,12 +2,14 @@ package quod.ai.bigdata;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import quod.ai.bigdata.project.Project;
 import quod.ai.bigdata.project.ProjectStatistic;
 import quod.ai.bigdata.scorer.Measurable;
 import quod.ai.bigdata.scorer.metrics.count.CommitMetric;
 
-import java.io.BufferedReader;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +17,8 @@ import java.util.List;
 import java.util.Set;
 
 public class TopProjectsDetector {
+    private static final Logger LOG = LoggerFactory.getLogger(TopProjectsDetector.class);
+
     private static final int NUMBER_OF_COLLECTED_HOURS = 30 * 24;
     private ProjectStatistic projectStatistic;
 
@@ -26,17 +30,20 @@ public class TopProjectsDetector {
         if (collectProjectStatistic()) {
             projectStatistic.updateProjectHealth();
             Project[] top100Projects = searchTop100Projects();
+            System.out.println(top100Projects.length);
         }
     }
 
     private boolean collectProjectStatistic() {
         LocalDateTime atHour = LocalDateTime.now().minusDays(30).withHour(0);
+        String lastHourStr = getHourPresentation(LocalDateTime.now().withHour(0));
         for (int i = 0; i < NUMBER_OF_COLLECTED_HOURS; i++) {
             try {
+                LOG.info("Collecting events at " + getHourPresentation(atHour) + " / last hour: " + lastHourStr);
                 collectProjectStatistic(atHour);
                 Thread.sleep((int)(Math.random() * 1000));
             } catch (Exception e) {
-                System.out.println("Error during execute events at " + atHour.toString());
+                LOG.error("Error during execute events at " + getHourPresentation(atHour));
                 e.printStackTrace();
                 return false;
             }
@@ -46,7 +53,6 @@ public class TopProjectsDetector {
     }
 
     private void collectProjectStatistic(LocalDateTime atHour) throws Exception {
-        System.out.println("Collecting events at: " + atHour.toString());
         JsonParser eventParser = new JsonParser();
         BufferedReader eventsReader = EventDownloader.openStreamToEvents(atHour);
         String line;
@@ -78,6 +84,11 @@ public class TopProjectsDetector {
         Project[] projects = new Project[projectSet.size()];
         projectSet.toArray(projects);
         return projects;
+    }
+
+    private String getHourPresentation(LocalDateTime atHour) {
+        return String.format("%4d-%02d-%02d-%02d",
+                atHour.getYear(), atHour.getMonthValue(), atHour.getDayOfMonth(), atHour.getHour());
     }
 
     public static void main(String[] args) {
