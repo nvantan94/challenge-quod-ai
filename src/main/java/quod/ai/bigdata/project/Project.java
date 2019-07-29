@@ -8,12 +8,12 @@ import lombok.Setter;
 public class Project implements Comparable<Project> {
     private long id;
     private String name;
-    private String url;
+    private String org;
     private double healthScore;
 
-    public Project(long id, String url, String name) {
+    public Project(long id, String org, String name) {
         this.id = id;
-        this.url = url;
+        this.org = org;
         this.name = name;
     }
 
@@ -32,7 +32,7 @@ public class Project implements Comparable<Project> {
         Project project = (Project) other;
         return project.id == id &&
                 project.name.equals(name) &&
-                project.url.equals(url);
+                project.org.equals(org);
     }
 
     @Override
