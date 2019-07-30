@@ -53,11 +53,9 @@ public class ResponseTimeForIssueMetric implements Measurable {
         if (responseTimes.size() == 0)
             return 0.0;
         minResponseTime = Collections.min(responseTimes);
-        if (minResponseTime == 0)
-            return 0.0;
         Long sumResponseTime = responseTimes.stream().reduce(Long::sum).get();
         avgResponseTime = (double) sumResponseTime / responseTimes.size();
-        return avgResponseTime / minResponseTime;
+        return avgResponseTime == 0.0? 0 : minResponseTime / avgResponseTime;
     }
 
     @Override
