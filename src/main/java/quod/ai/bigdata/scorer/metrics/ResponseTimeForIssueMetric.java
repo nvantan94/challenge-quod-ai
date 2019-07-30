@@ -16,6 +16,8 @@ public class ResponseTimeForIssueMetric implements Measurable {
 
     public ResponseTimeForIssueMetric() {
         responseTimes = new ArrayList<>();
+        minResponseTime = 0l;
+        avgResponseTime = 0.0;
     }
 
     @Override
@@ -32,8 +34,8 @@ public class ResponseTimeForIssueMetric implements Measurable {
             LocalDateTime commentCreatedAt = LocalDateTime.parse(
                     commentCreatedAtStr.substring(0, commentCreatedAtStr.length() - 1));
 
-            responseTimes.add(
-                    commentCreatedAt.toEpochSecond(ZoneOffset.UTC) - issueCreatedAt.toEpochSecond(ZoneOffset.UTC));
+            long responseTime = commentCreatedAt.toEpochSecond(ZoneOffset.UTC) - issueCreatedAt.toEpochSecond(ZoneOffset.UTC);
+            responseTimes.add(responseTime);
         }
     }
 
@@ -48,7 +50,11 @@ public class ResponseTimeForIssueMetric implements Measurable {
 
     @Override
     public double calculateScore() {
+        if (responseTimes.size() == 0)
+            return 0.0;
         minResponseTime = Collections.min(responseTimes);
+        if (minResponseTime == 0)
+            return 0.0;
         Long sumResponseTime = responseTimes.stream().reduce(Long::sum).get();
         avgResponseTime = (double) sumResponseTime / responseTimes.size();
         return avgResponseTime / minResponseTime;
