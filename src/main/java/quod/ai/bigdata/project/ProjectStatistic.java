@@ -46,9 +46,9 @@ public class ProjectStatistic {
 
     public void updateProjectHealth() {
         projectToMetrics.entrySet().forEach(entry -> {
-            double healthScore = entry.getValue().stream()
-                    .map(metric -> metric.calculateScore())
-                    .reduce(0.0, Double::sum);
+            double healthScore = 1.0;
+            for (Measurable metric : entry.getValue())
+                healthScore *= metric.calculateScore();
             entry.getKey().setHealthScore(healthScore);
         });
     }
